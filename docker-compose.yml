@@ -1,0 +1,65 @@
+# Asset Inspector SaaS - Development Environment
+# Supports: Laravel 12, React 19, React Native 0.76
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: asset-inspector-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: asset_inspector
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - asset-inspector
+
+  # Redis Cache
+  redis:
+    image: redis:7.4-alpine
+    container_name: asset-inspector-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - asset-inspector
+
+  # MailHog (Email Testing)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: asset-inspector-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - asset-inspector
+    profiles:
+      - dev
+
+# Volumes
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  backend_storage:
+    driver: local
+  minio_data:
+    driver: local
+
+# Networks
+networks:
+  asset-inspector:
+    driver: bridge
+
+# Profiles for different development modes
+# Usage:
+# docker-compose up                          # Backend + Frontend only
+# docker-compose --profile mobile-dev up    # Include mobile development
+# docker-compose --profile full up          # Everything including monitoring

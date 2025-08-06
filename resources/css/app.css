@@ -1,0 +1,22 @@
+@import 'tippy.js/dist/tippy.css';
+@import './shadcn.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fix for Filament file upload JavaScript errors */
+.fi-fo-file-upload {
+    position: relative;
+}
+
+.fi-fo-file-upload input[type="file"] {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+/* Ensure proper initialization of file upload components */
+[x-data] {
+    display: block;
+}
